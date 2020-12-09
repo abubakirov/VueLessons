@@ -44,10 +44,10 @@
 </template>
 
 <script>
-  export default {
-    name: 'ProductItem',
-    props: ['product'],
-  };
+export default {
+  name: 'ProductItem',
+  props: ['product'],
+};
 </script>
 
 <style scoped>
