@@ -2,7 +2,7 @@
   <ul class="catalog__pagination pagination">
     <li class="pagination__item">
       <a class="pagination__link pagination__link--arrow"
-         :class="{'pagination__link--disabled': page == 1}"
+         :class="{'pagination__link--disabled': page === 1}"
          href="#"
          aria-label="Предыдущая страница"
          @click.prevent="paginate(page - 1)">
@@ -20,7 +20,7 @@
     </li>
     <li class="pagination__item">
       <a class="pagination__link pagination__link--arrow"
-         :class="{'pagination__link--disabled': page == pages}"
+         :class="{'pagination__link--disabled': page === pages}"
          href="#"
          aria-label="Следующая страница"
          @click.prevent="paginate(page + 1)">
