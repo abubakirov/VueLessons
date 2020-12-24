@@ -49,7 +49,7 @@ export default {
       filterPriceFrom: 0,
       filterPriceTo: 0,
       filterCategoryId: 0,
-      filterColor: 'None',
+      filterColor: null,
 
       page: 1,
       productsPerPage: 3,
@@ -73,7 +73,7 @@ export default {
           (product) => product.categoryId === this.filterCategoryId,
         );
       }
-      if (this.filterColor !== 'None') {
+      if (this.filterColor !== null) {
         filteredProducts = filteredProducts.filter(
           (product) => product.colors.includes(this.filterColor),
         );
@@ -88,9 +88,11 @@ export default {
       return this.filteredProducts.length;
     },
     allProductColors() {
-      const colors = new Set();
-      products.forEach((product) => product.colors.forEach((color) => colors.add(color)));
-      return colors;
+      const allColors = new Set();
+      products.forEach(
+        (product) => product.colors.forEach((color) => allColors.add(color)),
+      );
+      return allColors;
     },
   },
 };

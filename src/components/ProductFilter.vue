@@ -29,7 +29,7 @@
           <select class="form__select"
                   type="text"
                   name="category"
-                  v-model.number="currentCategoryId"
+                  v-model="currentCategoryId"
           >
             <option value="0">Все категории</option>
             <option v-for="category in categories"
@@ -44,34 +44,7 @@
 
       <fieldset class="form__block">
         <legend class="form__legend">Цвет</legend>
-        <ul class="colors">
-          <li class="colors__item">
-            <label class="colors__label">
-              <input class="colors__radio sr-only" type="radio" name="color"
-                     value="None" @click="currentColor = 'None'">
-              <span class="colors__value" style="background-color: #9d9d9d">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     width="20"
-                     height="20"
-                     fill="currentColor"
-                     class="bi bi-x"
-                     viewBox="0 0 20 20">
-                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1
-                        .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646
-                        2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                </svg>
-              </span>
-            </label>
-          </li>
-          <li class="colors__item" v-for="color in colors" :key="color">
-            <label class="colors__label">
-              <input class="colors__radio sr-only" type="radio" name="color"
-                     :value="color" @click="currentColor = color">
-              <span class="colors__value" v-bind:style="{ backgroundColor: color }">
-                </span>
-            </label>
-          </li>
-        </ul>
+        <ColorList :colors="colors" :color.sync="currentColor"/>
       </fieldset>
 
       <fieldset class="form__block">
@@ -148,17 +121,21 @@
 </template>
 
 <script>
-import categories from '../data/categories';
+import categories from '@/data/categories';
+import ColorList from '@/components/ColorList.vue';
 
 export default {
   name: 'ProductFilter',
   props: ['filterPriceFrom', 'filterPriceTo', 'filterCategoryId', 'filterColor', 'colors'],
+  components: {
+    ColorList,
+  },
   data() {
     return {
       currentPriceFrom: 0,
       currentPriceTo: 0,
       currentCategoryId: 0,
-      currentColor: 'None',
+      currentColor: null,
     };
   },
   computed: {
@@ -176,6 +153,9 @@ export default {
     filterCategoryId(value) {
       this.currentCategoryId = value;
     },
+    filterColor(value) {
+      this.currentColor = value;
+    },
   },
   methods: {
     submit() {
@@ -188,7 +168,7 @@ export default {
       this.currentCategoryId = 0;
       this.currentPriceFrom = 0;
       this.currentPriceTo = 0;
-      this.currentColor = 'None';
+      this.currentColor = null;
       this.submit();
     },
   },
