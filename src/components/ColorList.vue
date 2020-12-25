@@ -1,5 +1,5 @@
 <template>
-<ul class="colors colors--black">
+<ul class="colors">
   <li v-for="availableColor in colors" :key="availableColor.id" class="colors__item">
     <label class="colors__label">
       <input

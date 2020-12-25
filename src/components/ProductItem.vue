@@ -14,7 +14,7 @@
           {{ product.price }} Р
       </span>
 
-  <ColorList :colors="product.colors"/>
+  <ColorList :colors="product.colors" class="colors--black"/>
   </div>
 </template>
 
