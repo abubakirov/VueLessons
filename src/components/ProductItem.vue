@@ -1,7 +1,6 @@
 <template>
   <div>
-  <a class="catalog__pic" href="#"
-     @click.prevent="$emit('gotoPage', 'product', {id: product.id})">
+  <a class="catalog__pic" href="#" @click.prevent="gotoPage('product', {id: product.id})">
     <img v-bind:src="product.pic" :alt="product.title">
   </a>
 
@@ -21,6 +20,7 @@
 
 <script>
 import ColorList from '@/components/ColorList.vue';
+import eventBus from '@/eventBus';
 
 export default {
   name: 'ProductItem',
@@ -31,6 +31,11 @@ export default {
     return {
       color: '#000',
     };
+  },
+  methods: {
+    gotoPage(pageName, params) {
+      eventBus.$emit('gotoPage', pageName, params);
+    },
   },
   props: ['product'],
 };
