@@ -11,7 +11,7 @@
   </h3>
 
   <span class="catalog__price">
-          {{ product.price }} Р
+          {{ product.price | numberFormat }} ₽
       </span>
 
   <ColorList :colors="product.colors" class="colors--black"/>
@@ -20,10 +20,14 @@
 
 <script>
 import ColorList from '@/components/ColorList.vue';
-import eventBus from '@/eventBus';
+import gotoPage from '@/helpers/gotoPage';
+import numberFormat from '@/helpers/numberFormat';
 
 export default {
   name: 'ProductItem',
+  filters: {
+    numberFormat,
+  },
   components: {
     ColorList,
   },
@@ -33,9 +37,7 @@ export default {
     };
   },
   methods: {
-    gotoPage(pageName, params) {
-      eventBus.$emit('gotoPage', pageName, params);
-    },
+    gotoPage,
   },
   props: ['product'],
 };
