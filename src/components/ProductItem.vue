@@ -11,7 +11,7 @@
   </h3>
 
   <span class="catalog__price">
-          {{ product.price | numberFormat }} ₽
+          {{ (product.price || "") | numberFormat }} ₽
       </span>
 
   <ColorList :colors="product.colors" class="colors--black"/>
