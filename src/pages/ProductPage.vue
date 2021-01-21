@@ -33,7 +33,7 @@
           {{ product.title }}
         </h2>
         <div class="item__form">
-          <form class="form" action="#" method="POST">
+          <form class="form" method="POST" @submit.prevent="addToCart">
             <b class="item__price">
               {{ (product.price || "") | numberFormat }} ₽
             </b>
@@ -103,15 +103,17 @@
 
             <div class="item__row">
               <div class="form__counter">
-                <button type="button" aria-label="Убрать один товар">
+                <button type="button" aria-label="Убрать один товар"
+                        @click.prevent="productAmount--">
                   <svg width="12" height="12" fill="currentColor">
                     <use xlink:href="#icon-minus"></use>
                   </svg>
                 </button>
 
-                <input type="text" value="1" name="count">
+                <input type="text" v-model.number="productAmount" name="count">
 
-                <button type="button" aria-label="Добавить один товар">
+                <button type="button" aria-label="Добавить один товар"
+                        @click.prevent="productAmount++">
                   <svg width="12" height="12" fill="currentColor">
                     <use xlink:href="#icon-plus"></use>
                   </svg>
@@ -203,12 +205,25 @@ export default {
   filters: {
     numberFormat,
   },
+  data() {
+    return {
+      productAmount: 1,
+    };
+  },
   computed: {
     product() {
       return products.find((product) => product.id === Number(this.$route.params.id));
     },
     category() {
       return categories.find((category) => category.id === this.product.categoryId);
+    },
+  },
+  methods: {
+    addToCart() {
+      this.$store.commit(
+        'addProductToCart',
+        { productId: this.product.id, amount: this.productAmount },
+      );
     },
   },
 };
