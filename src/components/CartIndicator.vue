@@ -4,14 +4,21 @@
       <use xlink:href="#icon-cart"></use>
     </svg>
     <span class="header__count" aria-label="Количество товаров">
-      {{ $store.state.cartProducts.length }}
+      {{ countProducts }}
     </span>
   </router-link>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'CartIndicator',
+  computed: {
+    ...mapGetters({
+      countProducts: 'cartCountProducts',
+    }),
+  },
 };
 </script>
 
