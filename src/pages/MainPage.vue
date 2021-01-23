@@ -32,6 +32,7 @@
 
 <script>
 import products from '@/data/products';
+import colors from '@/data/colors';
 import ProductList from '@/components/ProductList.vue';
 import AppPagination from '@/components/AppPagination.vue';
 import ProductFilter from '@/components/ProductFilter.vue';
@@ -74,7 +75,7 @@ export default {
       }
       if (this.filterColor !== null) {
         filteredProducts = filteredProducts.filter(
-          (product) => product.colors.includes(this.filterColor),
+          (product) => product.colorIds.includes(this.filterColor.id),
         );
       }
       return filteredProducts;
@@ -89,7 +90,9 @@ export default {
     allProductColors() {
       const allColors = new Set();
       products.forEach(
-        (product) => product.colors.forEach((color) => allColors.add(color)),
+        (product) => product.colorIds.forEach(
+          (colorId) => allColors.add(colors.find((color) => color.id === colorId)),
+        ),
       );
       return allColors;
     },

@@ -14,7 +14,7 @@
           {{ (product.price || "") | numberFormat }} ₽
       </span>
 
-  <ColorList :colors="product.colors" class="colors--black"/>
+  <ColorList :colors="colors" class="colors--black"/>
   </div>
 </template>
 
@@ -22,6 +22,7 @@
 import ColorList from '@/components/ColorList.vue';
 import gotoPage from '@/helpers/gotoPage';
 import numberFormat from '@/helpers/numberFormat';
+import colors from '@/data/colors';
 
 export default {
   name: 'ProductItem',
@@ -40,6 +41,11 @@ export default {
     gotoPage,
   },
   props: ['product'],
+  computed: {
+    colors() {
+      return colors.filter((color) => this.product.colorIds.indexOf(color.id) !== -1);
+    },
+  },
 };
 </script>
 
