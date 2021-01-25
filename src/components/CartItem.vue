@@ -1,11 +1,15 @@
 <template>
 <li class="cart__item product">
   <div class="product__pic">
-    <img :src="item.product.pic" width="120" height="120" :alt="item.product.title">
+    <router-link :to="{name: 'product', params: {id: item.product.id}}">
+      <img :src="item.product.pic" width="120px" height="120px" :alt="item.product.title">
+    </router-link>
   </div>
-  <h3 class="product__title">
-    {{ item.product.title }}
-  </h3>
+  <router-link :to="{name: 'product', params: {id: item.product.id}}">
+    <h3 class="product__title">
+      {{ item.product.title }}
+    </h3>
+  </router-link>
   <p class="product__info product__info--color">
     Цвет:
     <span>
@@ -17,22 +21,8 @@
     Артикул: {{ item.productId }}
   </span>
 
-  <div class="product__counter form__counter">
-    <button type="button" aria-label="Убрать один товар" @click.prevent="amount--">
-      <svg width="10" height="10" fill="currentColor">
-        <use xlink:href="#icon-minus"></use>
-      </svg>
-    </button>
-
-    <input type="text" v-model.number="amount" name="count">
-
-    <button type="button" aria-label="Добавить один товар"
-            @click.prevent="amount++">
-      <svg width="10" height="10" fill="currentColor">
-        <use xlink:href="#icon-plus"></use>
-      </svg>
-    </button>
-  </div>
+  <ProductCounter class="product__counter form__counter"
+                  v-model="amount" :minValue="0"/>
 
   <b class="product__price">
     {{ ((item.amount * item.product.price) || '') | numberFormat }} ₽
@@ -50,9 +40,11 @@
 <script>
 import numberFormat from '@/helpers/numberFormat';
 import { mapMutations } from 'vuex';
+import ProductCounter from '@/components/ProductCounter.vue';
 
 export default {
   name: 'CartItem',
+  components: { ProductCounter },
   props: ['item'],
   filters: {
     numberFormat,

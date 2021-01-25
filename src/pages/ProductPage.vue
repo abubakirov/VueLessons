@@ -78,23 +78,8 @@
             </fieldset>
 
             <div class="item__row">
-              <div class="form__counter">
-                <button type="button" aria-label="Убрать один товар"
-                        @click.prevent="productAmount--">
-                  <svg width="12" height="12" fill="currentColor">
-                    <use xlink:href="#icon-minus"></use>
-                  </svg>
-                </button>
-
-                <input type="text" v-model.number="productAmount" name="count">
-
-                <button type="button" aria-label="Добавить один товар"
-                        @click.prevent="productAmount++">
-                  <svg width="12" height="12" fill="currentColor">
-                    <use xlink:href="#icon-plus"></use>
-                  </svg>
-                </button>
-              </div>
+              <ProductCounter class="form__counter"
+                              v-model="productAmount" :min-value="1"/>
 
               <button class="button button--primery" type="submit">
                 В корзину
@@ -177,10 +162,11 @@ import colors from '@/data/colors';
 import categories from '@/data/categories';
 import numberFormat from '@/helpers/numberFormat';
 import ColorList from '@/components/ColorList.vue';
+import ProductCounter from '@/components/ProductCounter.vue';
 
 export default {
   name: 'ProductPage',
-  components: { ColorList },
+  components: { ProductCounter, ColorList },
   filters: {
     numberFormat,
   },
@@ -206,6 +192,14 @@ export default {
         'addProductToCart',
         { productId: this.product.id, amount: this.productAmount },
       );
+    },
+  },
+  watch: {
+    $route: (to) => {
+      console.log('!!!!!');
+      if (products.indexOf((product) => product.id === to.params.id) === -1) {
+        this.$router.push({ name: 'notFound' });
+      }
     },
   },
 };
