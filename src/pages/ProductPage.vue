@@ -195,9 +195,8 @@ export default {
     },
   },
   watch: {
-    $route: (to) => {
-      console.log('!!!!!');
-      if (products.indexOf((product) => product.id === to.params.id) === -1) {
+    '$route.params.id': function () {
+      if (!this.product) {
         this.$router.push({ name: 'notFound' });
       }
     },
