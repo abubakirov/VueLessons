@@ -43,7 +43,8 @@ export default {
   props: ['product'],
   computed: {
     colors() {
-      return colors.filter((color) => this.product.colorIds.indexOf(color.id) !== -1);
+      // return colors.filter((color) => this.product.colorIds.indexOf(color.id) !== -1);
+      return colors;
     },
   },
 };
