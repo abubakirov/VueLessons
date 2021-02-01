@@ -31,12 +31,13 @@
 </template>
 
 <script>
+import axios from 'axios';
+import API_BASE_URL from '@/config';
 import products from '@/data/products';
 import colors from '@/data/colors';
 import ProductList from '@/components/ProductList.vue';
 import AppPagination from '@/components/AppPagination.vue';
 import ProductFilter from '@/components/ProductFilter.vue';
-import axios from 'axios';
 
 export default {
   name: 'MainPage',
@@ -59,30 +60,6 @@ export default {
     };
   },
   computed: {
-    filteredProducts() {
-      let filteredProducts = products;
-      if (this.filterPriceFrom > 0) {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.price >= this.filterPriceFrom,
-        );
-      }
-      if (this.filterPriceTo > 0) {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.price <= this.filterPriceTo,
-        );
-      }
-      if (this.filterCategoryId) {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.categoryId === this.filterCategoryId,
-        );
-      }
-      if (this.filterColor !== null) {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.colorIds.includes(this.filterColor.id),
-        );
-      }
-      return filteredProducts;
-    },
     products() {
       return this.productsData
         ? this.productsData.items.map((product) => ({
@@ -92,7 +69,10 @@ export default {
         : [];
     },
     countProducts() {
-      return this.productsData ? this.productsData.pagination.total : 0;
+      if (!this.productsData) {
+        return 0;
+      }
+      return this.productsData.pagination.total || this.productsData.items.length || 0;
     },
     allProductColors() {
       const allColors = new Set();
@@ -106,10 +86,21 @@ export default {
   },
   methods: {
     loadProducts() {
-      axios.get(`http://vue-study.dev.creonit.ru/api/products?page=${this.page}&limit=${this.productsPerPage}`)
-        .then((response) => {
-          this.productsData = response.data;
-        });
+      clearTimeout(this.loadProductsTimer);
+      this.loadProductsTimer = setTimeout(() => {
+        axios.get(`${API_BASE_URL}/products`, {
+          params: {
+            page: this.page,
+            limit: this.productsPerPage,
+            categoryId: this.categoryId,
+            minPrice: this.filterPriceFrom,
+            maxPrice: this.filterPriceTo,
+          },
+        })
+          .then((response) => {
+            this.productsData = response.data;
+          });
+      }, 0);
     },
   },
   created() {
@@ -117,6 +108,18 @@ export default {
   },
   watch: {
     page() {
+      this.loadProducts();
+    },
+    productsPerPage() {
+      this.loadProducts();
+    },
+    filterCategoryId() {
+      this.loadProducts();
+    },
+    filterPriceFrom() {
+      this.loadProducts();
+    },
+    filterPriceTo() {
       this.loadProducts();
     },
   },

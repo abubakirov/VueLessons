@@ -121,8 +121,9 @@
 </template>
 
 <script>
-import categories from '@/data/categories';
+import axios from 'axios';
 import ColorList from '@/components/ColorList.vue';
+import API_BASE_URL from '../config';
 
 export default {
   name: 'ProductFilter',
@@ -136,11 +137,12 @@ export default {
       currentPriceTo: 0,
       currentCategoryId: 0,
       currentColor: null,
+      categoriesData: null,
     };
   },
   computed: {
     categories() {
-      return categories;
+      return this.categoriesData ? this.categoriesData.items : null;
     },
   },
   watch: {
@@ -171,6 +173,15 @@ export default {
       this.currentColor = null;
       this.submit();
     },
+    loadCategories() {
+      axios.get(`${API_BASE_URL}/productCategories`)
+        .then((response) => {
+          this.categoriesData = response.data;
+        });
+    },
+  },
+  created() {
+    this.loadCategories();
   },
 };
 </script>
