@@ -20,6 +20,12 @@
 
       <section class="catalog">
 
+        <div v-if="productsLoading">Загрузка товаров...</div>
+        <div v-if="productsLoadingFailed">
+          Произошла ошибка при загрузке товаров
+          <button class="button" @click.prevent="loadProducts">Перезагрузить</button>
+        </div>
+
         <ProductList :products="products"/>
 
         <AppPagination v-model="page" :per-page="productsPerPage" :count="countProducts"/>
@@ -57,6 +63,9 @@ export default {
       productsPerPage: 3,
 
       productsData: null,
+
+      productsLoading: false,
+      productsLoadingFailed: false,
     };
   },
   computed: {
@@ -86,6 +95,8 @@ export default {
   },
   methods: {
     loadProducts() {
+      this.productsLoading = true;
+      this.productsLoadingFailed = false;
       clearTimeout(this.loadProductsTimer);
       this.loadProductsTimer = setTimeout(() => {
         axios.get(`${API_BASE_URL}/products`, {
@@ -99,8 +110,14 @@ export default {
         })
           .then((response) => {
             this.productsData = response.data;
+          })
+          .catch(() => {
+            this.productsLoadingFailed = true;
+          })
+          .then(() => {
+            this.productsLoading = false;
           });
-      }, 0);
+      }, 5000);
     },
   },
   created() {
