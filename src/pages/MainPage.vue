@@ -92,7 +92,7 @@ export default {
           params: {
             page: this.page,
             limit: this.productsPerPage,
-            categoryId: this.categoryId,
+            categoryId: this.filterCategoryId,
             minPrice: this.filterPriceFrom,
             maxPrice: this.filterPriceTo,
           },
