@@ -117,7 +117,7 @@ export default {
           .then(() => {
             this.productsLoading = false;
           });
-      }, 5000);
+      }, 0);
     },
   },
   created() {

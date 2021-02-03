@@ -22,7 +22,6 @@
 import ColorList from '@/components/ColorList.vue';
 import gotoPage from '@/helpers/gotoPage';
 import numberFormat from '@/helpers/numberFormat';
-import colors from '@/data/colors';
 
 export default {
   name: 'ProductItem',
@@ -43,8 +42,7 @@ export default {
   props: ['product'],
   computed: {
     colors() {
-      // return colors.filter((color) => this.product.colorIds.indexOf(color.id) !== -1);
-      return colors;
+      return this.product.colors;
     },
   },
 };
