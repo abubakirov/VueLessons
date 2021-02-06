@@ -1,14 +1,15 @@
+import axios from 'axios';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import products from '@/data/products';
+import API_BASE_URL from '@/config';
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    cartProducts: [
-      { productId: 1, amount: 2 },
-    ],
+    cartProducts: [],
+    userAccessKey: null,
+    cartProductsData: [],
   },
   mutations: {
     addProductToCart(state, payload) {
@@ -37,13 +38,31 @@ const store = new Vuex.Store({
         state.cartProducts.splice(index);
       }
     },
+    updateUserAccessKey(state, accessKey) {
+      state.userAccessKey = accessKey;
+    },
+    updateCartProductsData(state, items) {
+      state.cartProductsData = items;
+    },
+    syncCartProducts(state) {
+      state.cartProducts = state.cartProductsData.map((item) => ({
+        productId: item.product.id,
+        amount: item.quantity,
+      }));
+    },
   },
   getters: {
     cartDetailsProducts(state) {
-      return state.cartProducts.map((item) => ({
-        ...item,
-        product: products.find((product) => product.id === item.productId),
-      }));
+      return state.cartProducts.map((item) => {
+        const { product } = state.cartProductsData.find((p) => p.product.id === item.productId);
+        return {
+          ...item,
+          product: {
+            ...product,
+            pic: product.image.file.url,
+          },
+        };
+      });
     },
     cartTotalPrice(state, getters) {
       return getters.cartDetailsProducts.reduce((acc, item) => item.product.price
@@ -51,6 +70,23 @@ const store = new Vuex.Store({
     },
     cartCountProducts(state, getters) {
       return getters.cartDetailsProducts.length;
+    },
+  },
+  actions: {
+    loadCart(context) {
+      axios.get(`${API_BASE_URL}/baskets`, {
+        params: {
+          userAccessKey: context.state.userAccessKey,
+        },
+      })
+        .then((response) => {
+          if (!context.state.userAccessKey) {
+            localStorage.setItem('userAccessKey', response.data.user.accessKey);
+            context.commit('updateUserAccessKey', response.data.user.accessKey);
+          }
+          context.commit('updateCartProductsData', response.data.items);
+          context.commit('syncCartProducts');
+        });
     },
   },
 });
