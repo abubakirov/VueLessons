@@ -213,13 +213,13 @@ export default {
       this.productLoadingError = false;
       axios.get(`${API_BASE_URL}/products/${this.$route.params.id}`)
         .then((response) => {
-          console.log(response);
           this.productData = response.data;
         })
         .then(() => {
           this.productLoading = false;
         })
         .catch(() => {
+          this.productLoading = false;
           this.productLoadingError = true;
         });
     },
