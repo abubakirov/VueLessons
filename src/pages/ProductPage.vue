@@ -87,10 +87,12 @@
             <ProductCounter class="form__counter"
                             v-model="productAmount" :min-value="1"/>
 
-            <button class="button button--primery" type="submit">
+            <button class="button button--primery" type="submit" :disabled="productAddLoading">
               В корзину
             </button>
           </div>
+          <div v-if="productAdded">Товар добавлен!</div>
+          <div v-else-if="productAddLoading">Добавляем товар в корзину...</div>
         </form>
       </div>
     </div>
@@ -164,6 +166,7 @@
 
 <script>
 import axios from 'axios';
+import { mapActions } from 'vuex';
 import API_BASE_URL from '@/config';
 import numberFormat from '@/helpers/numberFormat';
 import ColorList from '@/components/ColorList.vue';
@@ -185,6 +188,9 @@ export default {
       productData: null,
       productLoading: false,
       productLoadingError: false,
+
+      productAdded: false,
+      productAddLoading: false,
     };
   },
   computed: {
@@ -199,14 +205,21 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['addProductToCart']),
     addToCart() {
-      this.$store.commit(
-        'addProductToCart',
+      this.productAdded = false;
+      this.productAddLoading = true;
+
+      this.addProductToCart(
         {
           productId: this.product.id,
           amount: this.productAmount,
         },
-      );
+      )
+        .then(() => {
+          this.productAdded = true;
+          this.productAddLoading = false;
+        });
     },
     loadProduct() {
       this.productLoading = true;

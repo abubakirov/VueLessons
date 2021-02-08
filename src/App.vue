@@ -123,6 +123,7 @@ export default {
   components: { CartIndicator },
   created() {
     const userAccessKey = localStorage.getItem('userAccessKey');
+
     if (userAccessKey) {
       this.updateUserAccessKey(userAccessKey);
     }
