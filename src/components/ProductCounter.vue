@@ -32,6 +32,11 @@ export default {
       }
     },
   },
+  watch: {
+    value(newVal) {
+      this.counterChange(newVal);
+    },
+  },
 };
 </script>
 
