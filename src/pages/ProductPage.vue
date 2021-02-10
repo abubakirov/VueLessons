@@ -1,6 +1,8 @@
 <template>
 
-<main class="content container" v-if="productLoading">Идут загрузка информации о товаре...</main>
+<main class="content container" v-if="productLoading">
+  Идет загрузка информации о товарах...
+</main>
 <main class="content container" v-else-if="productLoadingError">
   Не удалось получить информацию о товаре
   <button class="button" @click.prevent="loadProduct">Попробовать еще раз</button>
