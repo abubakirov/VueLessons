@@ -31,36 +31,21 @@
       <form class="cart__form form" action="#" method="POST">
         <div class="cart__field">
           <div class="cart__data">
-            <label class="form__label">
-              <input class="form__input" type="text" name="name"
-                     placeholder="Введите ваше полное имя" v-model="formData.name">
-              <span class="form__value">ФИО</span>
-            </label>
 
-            <label class="form__label">
-              <input class="form__input" type="text" name="address"
-                     placeholder="Введите ваш адрес" v-model="formData.address">
-              <span class="form__value">Адрес доставки</span>
-            </label>
+            <BaseFormText title="ФИО" :error="formError.name" type="text"
+                          placeholder="Введите ваше полное имя" v-model="formData.name"/>
 
-            <label class="form__label">
-              <input class="form__input" type="tel" name="phone"
-                     placeholder="Введите ваш телефон" v-model="formData.phone">
-              <span class="form__value">Телефон</span>
-              <span class="form__error" v-if="formError.phone">{{ formError.phone }}</span>
-            </label>
+            <BaseFormText title="Адрес доставки" :error="formError.address" type="text"
+                          placeholder="Введите ваш адрес" v-model="formData.address"/>
 
-            <label class="form__label">
-              <input class="form__input" type="email" name="email"
-                     placeholder="Введи ваш Email" v-model="formData.email">
-              <span class="form__value">Email</span>
-            </label>
+            <BaseFormText title="Телефон" :error="formError.phone" type="tel"
+                          placeholder="Введите ваш телефон" v-model="formData.phone"/>
 
-            <label class="form__label">
-              <textarea class="form__input form__input--area" name="comments"
-                        placeholder="Ваши пожелания" v-model="formData.comments"></textarea>
-              <span class="form__value">Комментарий к заказу</span>
-            </label>
+            <BaseFormText title="Email" :error="formError.email" type="email"
+                          placeholder="Введите ваш Email" v-model="formData.email"/>
+
+            <BaseFormTextarea title="Комментарий к заказу" :error="formError.comments"
+                              placeholder="Ваши пожелания" v-model="formData.comments"/>
           </div>
 
           <div class="cart__options">
@@ -147,8 +132,12 @@
 </template>
 
 <script>
+import BaseFormText from '@/components/BaseFormText.vue';
+import BaseFormTextarea from '@/components/BaseFormTextarea.vue';
+
 export default {
   name: 'OrderPage',
+  components: { BaseFormText, BaseFormTextarea },
   data() {
     return {
       formData: {},
