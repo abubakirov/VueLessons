@@ -39,7 +39,8 @@
           </p>
 
           <router-link class="cart__button button button--primery"
-                       :to="{ name: 'order' }" type="submit" tag="button">
+                       :to="{ name: 'order' }" type="submit" tag="button"
+                       :disabled="!countProducts">
             Оформить заказ
           </router-link>
         </div>

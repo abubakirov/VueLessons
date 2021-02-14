@@ -1,16 +1,19 @@
 <template>
-  <main class="content container">
+  <main v-if="orderSending">
+    Заказ отправляется...
+  </main>
+  <main class="content container" v-else>
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="index.html">
+          <router-link class="breadcrumbs__link" :to="{ name: 'main' }">
             Каталог
-          </a>
+          </router-link>
         </li>
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="cart.html">
+          <router-link class="breadcrumbs__link" :to="{ name: 'cart' }">
             Корзина
-          </a>
+          </router-link>
         </li>
         <li class="breadcrumbs__item">
           <a class="breadcrumbs__link">
@@ -92,34 +95,12 @@
           </div>
         </div>
 
-        <div class="cart__block">
-          <ul class="cart__orders">
-            <li class="cart__order">
-              <h3>Смартфон Xiaomi Redmi Note 7 Pro 6/128GB</h3>
-              <b>18 990 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
-            <li class="cart__order">
-              <h3>Гироскутер Razor Hovertrax 2.0ii</h3>
-              <b>4 990 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
-            <li class="cart__order">
-              <h3>Электрический дрифт-карт Razor Lil’ Crazy</h3>
-              <b>8 990 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
-          </ul>
-
-          <div class="cart__total">
-            <p>Доставка: <b>500 ₽</b></p>
-            <p>Итого: <b>3</b> товара на сумму <b>37 970 ₽</b></p>
-          </div>
-
-          <button class="cart__button button button--primery" type="submit">
+        <CartBlock :products="$store.state.cartProductsData">
+          <button class="cart__button button button--primery" type="submit" :disabled="cartIsEmpty">
             Оформить заказ
           </button>
-        </div>
+        </CartBlock>
+
         <div class="cart__error form__error-block" v-if="formErrorMessage">
           <h4>Заявка не отправлена!</h4>
           <p>
@@ -136,21 +117,33 @@ import axios from 'axios';
 import API_BASE_URL from '@/config';
 import BaseFormText from '@/components/BaseFormText.vue';
 import BaseFormTextarea from '@/components/BaseFormTextarea.vue';
+import numberFormat from '@/helpers/numberFormat';
+import CartBlock from '@/components/CartBlock.vue';
 
 export default {
   name: 'OrderPage',
-  components: { BaseFormText, BaseFormTextarea },
+  components: {
+    CartBlock,
+    BaseFormText,
+    BaseFormTextarea,
+  },
+  filters: {
+    numberFormat,
+  },
   data() {
     return {
       formData: {},
       formError: {},
       formErrorMessage: '',
+      orderSending: false,
     };
   },
   methods: {
     order() {
       this.formError = {};
       this.formErrorMessage = '';
+      this.orderSending = true;
+
       axios
         .post(`${API_BASE_URL}/orders`, {
           ...this.formData,
@@ -167,7 +160,21 @@ export default {
         .catch((error) => {
           this.formError = error.response.data.error.request || {};
           this.formErrorMessage = error.response.data.error.message || '';
+          this.orderSending = false;
         });
+    },
+  },
+  computed: {
+    cartIsEmpty() {
+      return this.$store.state.cartProducts.count === 0;
+    },
+    countCartProducts() {
+      return this.$store.state.cartProductsData
+        .reduce((val, item) => val + item.quantity, 0);
+    },
+    cartTotalAmount() {
+      return this.$store.state.cartProductsData
+        .reduce((val, item) => val + item.price * item.quantity, 500);
     },
   },
 };
